@@ -18,22 +18,15 @@ Graph::Graph(char* words[], int len) {
         Node node(word);
         hNodes[word.at(0) - 'a'].push_back(node); 
     }
-}
 
-void Graph::dfsCountChains(Node& node) {
-    node.color = GRAY; 
-    int i = node.tail - 'a';
-    node.results.push_back(node.word);
-    for (int j = 0; j < hNodes[i].size(); j++) {
-        if (hNodes[i][j].word == node.word) continue;
-        if (hNodes[i][j].color == WHITE) {
-            for (string chain: node.results) {
-                hNodes[i][j].results.push_back(chain + " " + hNodes[i][j].word);
+    for (int i = 0; i < 26; i++) {
+        for (int j = 0; j < hNodes[i].size(); j++) {
+            int idx = hNodes[i][j].tail - 'a';
+            for (int k = 0; k < hNodes[idx].size(); k++) {
+                hNodes[idx][k].degree++; 
             }
-            dfsCountChains(hNodes[i][j]);
-        } 
+        }
     }
-    node.color = BLACK;
 }
 
 int Graph::countChains(vector<string>& result) {
