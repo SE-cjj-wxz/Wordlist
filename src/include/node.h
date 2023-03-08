@@ -13,11 +13,13 @@ public:
     string word; 
     int color;
     int value;
-    explicit Node(string& str) {
-        word = str;
-        color = WHITE;
-        value = str.size();
-    }
+    int max;
+    Node* prev; 
+    int degree;
+    char tail;
+    vector<string> results;
+    explicit Node(string& str);
+    void removeSingleChain();
 };
 
 
