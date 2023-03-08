@@ -20,6 +20,7 @@ public:
     vector<string> results;
     explicit Node(string& str);
     void removeSingleChain();
+    void updateValue(int);
 };
 
 

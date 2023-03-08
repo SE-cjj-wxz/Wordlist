@@ -88,36 +88,65 @@ int Graph::countChains(vector<string>& result) {
 
 
 int Graph::getLongestChain(vector<string>& result) {
-    int degree[30];
-    memset(degree, 0, sizeof(int) * 30);
-    
     for (int i = 0; i < 26; i++) {
         for (int j = 0; j < hNodes[i].size(); j++) {
-            degree[hNodes[i][j].tail - 'a']++;
+            int idx = hNodes[i][j].tail - 'a';
+            for (int k = 0; k < hNodes[idx].size(); k++) {
+                if (hNodes[idx][k].word == hNodes[i][j].word) continue;
+                hNodes[idx][k].degree++;
+            }
         }
     }
 
     queue<pp> q;
 
     for (int i = 0; i < 26; i++) {
-        if (degree[i] == 0) {
-            for (int j = 0; j < hNodes[i].size(); j++) {
+        for (int j = 0; j < hNodes[i].size(); j++) {
+            if (hNodes[i][j].degree == 0) {
                 q.push(pp(i, j));
-                hNodes[i][j].color = GRAY; 
             }
         }
     }
 
     while (!q.empty()) {
         pp p = q.front();
-        int i = hNodes[p.first][p.second].tail - 'a';
+        q.pop();    
+        int i = hNodes[p.first][p.second].tail - 'a'; 
+
         for (int j = 0; j < hNodes[i].size(); j++) {
-            if (hNodes[i][j].color == WHITE) {
+            if (hNodes[i][j].word == hNodes[p.first][p.second].word) continue;
+            hNodes[i][j].degree--; 
+
+            if (hNodes[p.first][p.second].max + hNodes[i][j].value > hNodes[i][j].max) {
+                hNodes[i][j].max = hNodes[p.first][p.second].max + hNodes[i][j].value;
+                hNodes[i][j].prev = &hNodes[p.first][p.second];
+            }
+
+            if (hNodes[i][j].degree == 0) {
                 q.push(pp(i, j));
-                hNodes[i][j].color = GRAY;
             }
         }
-        q.pop();
-        hNodes[p.first][p.second].color = BLACK;
     }
+
+    int iMax, jMax;
+    int maxValue = -1;
+
+    for (int i = 0; i < 26; i++) {
+        for (int j = 0; j < hNodes[i].size(); j++) {
+            if (hNodes[i][j].max > maxValue) {
+                iMax = i;
+                jMax = j;
+                maxValue = hNodes[i][j].max;
+            }
+        }
+    }
+
+    Node* nodePtr = &hNodes[iMax][jMax];
+
+    while(!nodePtr) {
+        result.push_back(nodePtr->word);
+        nodePtr = nodePtr->prev;
+    }
+    
+    return result.size(); 
 }

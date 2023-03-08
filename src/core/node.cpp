@@ -17,3 +17,8 @@ void Node::removeSingleChain() {
         }
     }
 }
+
+void Node::updateValue(int val) {
+    value = val;
+    max = value; 
+}
