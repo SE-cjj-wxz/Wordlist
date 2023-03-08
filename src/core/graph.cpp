@@ -29,6 +29,17 @@ Graph::Graph(char* words[], int len) {
     }
 }
 
+void Graph::deleteNodeByHead(char head) {
+    int i = head - 'a';
+    for (int j = 0; j < hNodes[i].size(); j++) {
+        int idx = hNodes[i][j].tail - 'a';
+        for (int k = 0; k < hNodes[idx].size(); k++) {
+            hNodes[idx][k].degree--;
+        }
+    }
+    hNodes[i].clear();
+}
+
 int Graph::countChains(vector<string>& result) {
     for (int i = 0; i < 26; i++) {
         for (int j = 0; j < hNodes[i].size(); j++) {
